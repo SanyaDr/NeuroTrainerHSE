@@ -1,9 +1,15 @@
 """
-Ядро приложения - конфигурация, БД, безопасность
+Ядро приложения
 """
 
-from config import settings
-from database import Base, engine, SessionLocal, get_db, create_tables
+from backend.core.config import settings
+from backend.core.database import (
+    Base,
+    engine,
+    SessionLocal,
+    get_db,
+    create_tables
+)
 
 __all__ = [
     "settings",
@@ -11,5 +17,5 @@ __all__ = [
     "engine",
     "SessionLocal",
     "get_db",
-    "create_tables",
+    "create_tables"
 ]

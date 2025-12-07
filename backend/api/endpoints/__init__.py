@@ -2,11 +2,11 @@
 Эндпоинты API
 """
 
-from vibe import router as vibe_router
-from workout import router as workout_router
-from coach import router as coach_router
-from profile import router as profile_router
-from forecast import router as forecast_router
+from backend.api.endpoints.vibe import router as vibe_router
+from backend.api.endpoints.workout import router as workout_router
+from backend.api.endpoints.coach import router as coach_router
+from backend.api.endpoints.profile import router as profile_router
+from backend.api.endpoints.forecast import router as forecast_router
 
 __all__ = [
     "vibe_router",
