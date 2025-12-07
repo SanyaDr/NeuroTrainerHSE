@@ -1,0 +1,453 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&display=swap");
+
+:root {
+  font-family: "Roboto Mono", monospace;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  background-color: #000000;
+  color: #f9fafb;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* ===== APP LAYOUT ===== */
+
+.od-app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: radial-gradient(circle at top left, #0f172a 0%, #020617 50%, #000 100%);
+  color: #e5e7eb;
+}
+
+/* ===== HEADER ===== */
+
+.od-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  padding: 18px 32px 12px;
+  gap: 32px; /* расстояние между логотипом и меню */
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.95), rgba(0, 0, 0, 0.7));
+  backdrop-filter: blur(22px);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.35);
+}
+
+
+/* логотип OVERDRIVE */
+.od-logo {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  background: linear-gradient(90deg, #fb37ff, #ff4d94, #ff9aa2);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.od-nav-item {
+  position: relative;
+  border: none;
+  background: none;
+  font-size: 14px;
+  padding: 4px 0;
+  cursor: pointer;
+  color: #9ca3af;
+}
+
+.od-nav-item:focus,
+.od-nav-item:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+.od-login-btn:focus,
+.od-login-btn:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.od-nav-item--active {
+  color: #facc15;
+}
+
+.od-nav-item--active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -4px;
+  margin: 0 auto;
+  width: 80%;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #facc15, #f97316);
+}
+
+/* навигация — отдельный блок, не растягиваем её */
+.od-nav {
+  flex: 0 0 auto;
+  display: flex;
+  gap: 28px;
+  align-items: center;
+}
+
+/* правый блок — всегда одной ширины, чтобы меню не прыгало */
+.od-header-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 130px;          /* фиксирует ширину под "эти" / "В сети" + аватар */
+  justify-content: flex-end;
+}
+
+
+.od-user-icon {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 40px;
+}
+
+.od-user-circle {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at top, #1f2937 0%, #020617 80%);
+  box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.8);
+}
+
+.od-user-initial {
+  font-size: 14px;
+}
+
+/* ===== MAIN AREA ===== */
+
+.od-main {
+  position: relative;
+  flex: 1;
+  padding: 0;
+  display: flex;
+  justify-content: stretch;
+  align-items: stretch;
+  overflow: hidden;
+}
+
+
+/* неоновые пятна на фоне */
+.od-bg-glow {
+  position: absolute;
+  width: 340px;
+  height: 340px;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.od-bg-glow-left {
+  background: radial-gradient(circle, rgba(251, 56, 255, 0.9), transparent 60%);
+  left: -120px;
+  top: 40%;
+}
+
+.od-bg-glow-right {
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.9), transparent 60%);
+  right: -120px;
+  top: 10%;
+}
+
+.od-main-inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: none;   /* больше не ограничиваем ширину */
+  display: flex;
+  justify-content: center;
+}
+
+
+
+
+/* ===== EMOTION PANEL ===== */
+
+.emotion-panel {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  border-radius: 0;              /* если хочешь оставить скругление – можешь вернуть 32px */
+  padding: 32px 40px 40px;
+  background: radial-gradient(circle at top, #e5f0f5 0%, #cbd5e1 40%, #bcd0df 80%);
+  box-shadow: none;              /* тень убираем, чтобы не висело «окошко» */
+  color: #111827;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+.emotion-question {
+  font-size: 22px;
+  font-weight: 600;
+  text-align: center;
+  margin: 4px 0 24px;
+}
+
+/* круг как на скрине */
+.emotion-circle-wrapper {
+  margin-top: 4px;
+  margin-bottom: 20px;
+}
+
+.emotion-circle {
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  position: relative;
+  background: radial-gradient(
+    circle at center,
+    rgba(59, 189, 255, 0.9) 0%,
+    rgba(59, 189, 255, 0.45) 30%,
+    rgba(59, 189, 255, 0.16) 55%,
+    rgba(59, 189, 255, 0.05) 80%,
+    transparent 100%
+  );
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.3);
+  overflow: hidden;
+}
+
+.emotion-circle::before,
+.emotion-circle::after {
+  content: "";
+  position: absolute;
+  inset: 16%;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.emotion-circle::after {
+  inset: 32%;
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.emotion-circle-inner {
+  position: absolute;
+  inset: 44%;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, #f9fafb 0%, transparent 70%);
+}
+
+.emotion-label {
+  margin-top: 4px;
+  font-size: 22px;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* слайдер эмоций */
+
+.emotion-slider-block {
+  width: 100%;
+  max-width: 420px;
+  margin-top: 26px;
+  margin-bottom: 18px;
+}
+
+.emotion-slider {
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 28px;
+  border-radius: 999px;
+  background: #d1d5db;
+  outline: none;
+  padding: 0 14px;
+  box-sizing: border-box;
+}
+
+.emotion-slider::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 999px;
+  background: transparent;
+}
+.emotion-slider::-moz-range-track {
+  height: 4px;
+  border-radius: 999px;
+  background: transparent;
+}
+
+.emotion-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.2);
+  margin-top: -9px;
+}
+.emotion-slider::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: none;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.2);
+}
+
+.emotion-slider-caption {
+  margin-top: 6px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: 500;
+  color: #6b7280;
+}
+
+/* кнопка Далее */
+
+.primary-btn {
+  margin-top: 6px;
+  width: 100%;
+  max-width: 280px;
+  border: none;
+  border-radius: 999px;
+  padding: 12px 16px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  background: #10a1d6;
+  color: #f9fafb;
+  box-shadow: 0 10px 26px rgba(37, 99, 235, 0.6);
+}
+
+/* ===== PLACEHOLDER PANELS ===== */
+
+.placeholder-panel {
+  width: 100%;
+  height: 100%;
+  padding: 32px 40px 40px;
+  border-radius: 0;
+  background: radial-gradient(circle at top, #020617 0%, #020617 60%, #030712 100%);
+  border: none;
+  box-shadow: none;
+  text-align: center;
+}
+
+
+.placeholder-panel h2 {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+
+.placeholder-panel p {
+  margin: 0;
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 900px) {
+  .od-header {
+    padding: 14px 16px 8px;
+    gap: 8px;
+  }
+
+  .od-logo {
+    font-size: 18px;
+    letter-spacing: 0.16em;
+  }
+
+  .od-nav {
+    gap: 18px;
+  }
+
+  .od-main {
+  padding: 0;
+}
+
+.emotion-panel {
+  border-radius: 0;
+  padding: 32px 40px 40px;
+}
+
+  .emotion-circle {
+    width: 230px;
+    height: 230px;
+  }
+}
+.od-login-btn {
+  border: none;
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 11px;
+  cursor: pointer;
+  background: #0ea5e9;
+  color: #0b1120;
+  margin-right: 8px;
+}
+
+.od-login-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* баннер-подсказка про авторизацию */
+.od-auth-banner {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 12px;
+  border-radius: 0; /* без скругления */
+  background: rgba(15, 23, 42, 0.95);
+  color: #e5e7eb;
+  font-size: 11px;
+  border: 1px solid rgba(148, 163, 184, 0.7);
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.od-auth-text {
+  white-space: nowrap;
+}
+
+.od-auth-close {
+  border: none;
+  background: transparent;
+  color: #9ca3af;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+}
+
+.od-auth-close:focus,
+.od-auth-close:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
