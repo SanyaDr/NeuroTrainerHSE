@@ -1,9 +1,17 @@
-from fastapi import APIRouter, HTTPException
+# api/endpoints/workout.py
+from fastapi import APIRouter, HTTPException, Depends
 from typing import List, Optional
 from pydantic import BaseModel, Field
 from datetime import datetime
 import httpx
 import os
+
+from ...schemas.workout import CompleteExerciseRequest  # относительный импорт
+from ...utils.constants import calculate_exercise_points, EXERCISES  # относительный импорт
+from ...models.user import User  # относительный импорт
+from ...core.auth import get_current_user  # относительный импорт
+from ...core.database import get_db  # относительный импорт
+from sqlalchemy.orm import Session
 
 router = APIRouter()
 
@@ -68,7 +76,7 @@ async def generate_workout_with_ai(vibe_mode: str, duration: int) -> dict:
     try:
         async with httpx.AsyncClient() as client:
             response = await client.post(
-                "https://openrouter.ai/api/v1/chat/completions",
+                "https://openrouter.ai/api/v1/chat/completions  ",
                 headers={
                     "Authorization": f"Bearer {api_key}",
                     "Content-Type": "application/json"
@@ -158,3 +166,49 @@ async def generate_workout(request: WorkoutRequest):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+# === Новый endpoint для завершения упражнения ===
+@router.post("/workout/complete_exercise")
+async def complete_exercise(
+        request: CompleteExerciseRequest,
+        current_user: User = Depends(get_current_user),
+        db: Session = Depends(get_db)
+):
+    """
+    Принимает выполненное упражнение, вычисляет баллы и обновляет рейтинг пользователя.
+    """
+    # Проверяем, что упражнение существует
+    if request.exercise_slug not in EXERCISES:
+        raise HTTPException(status_code=400, detail="Unknown exercise slug")
+
+    cfg = EXERCISES[request.exercise_slug]
+
+    # Проверяем, что переданы правильные поля (reps или seconds)
+    reps = request.reps
+    seconds = request.seconds
+
+    if cfg.measure_type == "reps" and reps is None:
+        raise HTTPException(status_code=400, detail="Field 'reps' is required for this exercise")
+    if cfg.measure_type == "time" and seconds is None:
+        raise HTTPException(status_code=400, detail="Field 'seconds' is required for this exercise")
+
+    try:
+        points = calculate_exercise_points(
+            slug=request.exercise_slug,
+            reps=reps,
+            seconds=seconds
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+    # Обновляем рейтинг пользователя
+    current_user.rating += points
+    db.commit()
+    db.refresh(current_user)
+
+    return {
+        "status": "success",
+        "points_earned": points,
+        "total_rating": current_user.rating
+    }

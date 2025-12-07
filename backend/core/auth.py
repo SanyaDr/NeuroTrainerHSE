@@ -1,4 +1,4 @@
-# backend/core/security.py
+# backend/core/auth.py
 
 from datetime import datetime, timedelta
 from typing import Optional
