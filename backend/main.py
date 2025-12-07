@@ -23,6 +23,11 @@ app = FastAPI(
     debug=settings.debug,
 )
 
+
+@app.get("/api/ping")
+async def ping():
+    return {"status": "ok"}
+    
 # Настройка CORS
 app.add_middleware(
     CORSMiddleware,

@@ -793,13 +793,13 @@ body {
 .mood-chart-container {
   width: 100%;
   min-height: 260px;
-  background: #5a5155;
   display: flex;
   align-items: stretch;
   justify-content: center;
   padding: 16px 24px;
   box-sizing: border-box;
 }
+
 
 .mood-chart {
   width: 100%;

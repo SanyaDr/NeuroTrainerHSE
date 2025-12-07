@@ -289,9 +289,19 @@ function MoodChart({ moods }) {
 
   const getX = (i) => margin.left + i * stepX;
 
-  const points = moods
-    .map((m, i) => `${getX(i)},${getY(m)}`)
-    .join(" ");
+  // точки с координатами и настроением
+  const points = moods.map((m, i) => ({
+    x: getX(i),
+    y: getY(m),
+    mood: m,
+  }));
+
+  // цвет по настроению
+  const getColor = (mood) => {
+    if (mood === "злое") return "#ef4444";      // красный
+    if (mood === "бодрое") return "#22c55e";    // зелёный
+    return "#3b82f6";                           // сонное / синий
+  };
 
   return (
     <svg
@@ -349,22 +359,33 @@ function MoodChart({ moods }) {
         );
       })}
 
-      {/* линия настроения */}
-      <polyline
-        points={points}
-        fill="none"
-        stroke="#22c55e"
-        strokeWidth="2"
-      />
+      {/* цветные отрезки между точками */}
+      {points.slice(0, -1).map((p, i) => {
+        const next = points[i + 1];
+        const color = getColor(next.mood); // цвет по настроению целевого дня
+        return (
+          <line
+            key={i}
+            x1={p.x}
+            y1={p.y}
+            x2={next.x}
+            y2={next.y}
+            stroke={color}
+            strokeWidth="3"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        );
+      })}
 
-      {/* точки на линии */}
-      {moods.map((m, i) => (
+      {/* точки на линии, цвет — по настроению дня */}
+      {points.map((p, i) => (
         <circle
           key={i}
-          cx={getX(i)}
-          cy={getY(m)}
-          r="3"
-          fill="#22c55e"
+          cx={p.x}
+          cy={p.y}
+          r="4"
+          fill={getColor(p.mood)}
           stroke="#000000"
           strokeWidth="1"
         />
@@ -372,6 +393,7 @@ function MoodChart({ moods }) {
     </svg>
   );
 }
+
 
 /* ===== ОСНОВНОЙ КОМПОНЕНТ APP ===== */
 
