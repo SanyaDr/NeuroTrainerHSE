@@ -1,11 +1,11 @@
 from enum import Enum
 from typing import Optional
-from app.ai.llm_provider import LLMProvider
-from app.schemas.workout import VibeMode
+# from app.ai.llm_provider import LLMProvider
+# from app.schemas.workout import VibeMode
 
 class VibeAnalyzer:
-    def __init__(self):
-        self.llm = LLMProvider()
+    # def __init__(self):
+    #     self.llm = LLMProvider()
 
     async def analyze_from_text(self, text: Optional[str], audio_url: Optional[str]):
         """
@@ -23,6 +23,6 @@ class VibeAnalyzer:
         Верни JSON: {{"mode": "anti_stress|rage|boost|neutral", "confidence": 0.85, "description": "описание", "recommended_intensity": 0.7}}
         """
 
-        response = await self.llm.generate_json(prompt)
-        return response
+        # response = await self.llm.generate_json(prompt)
+        # return response
     

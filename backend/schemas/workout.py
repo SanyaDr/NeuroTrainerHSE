@@ -1,3 +1,4 @@
+# schemas/workout.py
 from pydantic import BaseModel, Field
 from typing import List, Optional, Literal
 from datetime import datetime
@@ -31,3 +32,10 @@ class WorkoutPlan(BaseModel):
     total_duration_min: int
     generated_at: datetime = Field(default_factory=datetime.utcnow)
     coach_style: str = "balanced"
+
+
+# === Новая схема ===
+class CompleteExerciseRequest(BaseModel):
+    exercise_slug: str = Field(..., description="Slug упражнения из utils/constants.py")
+    reps: Optional[int] = Field(None, ge=0, description="Количество повторов (если упражнение по повторам)")
+    seconds: Optional[int] = Field(None, ge=0, description="Количество секунд (если упражнение по времени)")

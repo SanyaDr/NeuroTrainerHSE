@@ -1,8 +1,7 @@
-
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-class Settings(BaseSettings):
+class Settings():
     # ====== ОБЪЯВЛЯЕМ ВСЕ ПОЛЯ ТУТ ======
     app_name: str = "NeuroCoach Vibe"
     openrouter_api_key: str  # берётся из .env

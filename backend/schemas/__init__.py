@@ -2,7 +2,7 @@
 Pydantic схемы для валидации и сериализации
 """
 
-from workout import (
+from .workout import (
     VibeMode,
     ExerciseStep,
     WorkoutPlan,
