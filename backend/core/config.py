@@ -21,3 +21,5 @@ class Settings():
 
 # НИКАКОГО своего __init__ тут не нужно!
 settings = Settings()
+
+print("DEBUG KEY:", bool(settings.openrouter_api_key))
