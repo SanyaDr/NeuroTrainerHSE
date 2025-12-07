@@ -1,33 +1,29 @@
 import os
 from typing import Optional
-from pydantic_settings import BaseSettings
 
 
-class Settings(BaseSettings):
-    # Основные настройки
-    app_name: str = "NeuroCoach Vibe"
-    debug: bool = True
-    api_prefix: str = "/api/v1"
+class Settings:
+    """Настройки приложения"""
 
-    # API ключи
-    openrouter_api_key: Optional[str] = None
-    openai_api_key: Optional[str] = None
+    def __init__(self):
+        # Основные настройки
+        self.app_name: str = "NeuroCoach Vibe"
+        self.debug: bool = True
+        self.api_prefix: str = "/api/v1"
 
-    # База данных
-    database_url: str = "sqlite:///./neurocoach.db"
+        # API ключи
+        self.openrouter_api_key: Optional[str] = os.getenv("OPENROUTER_API_KEY")
+        self.openai_api_key: Optional[str] = os.getenv("OPENAI_API_KEY")
 
-    # CORS
-    cors_origins: list = ["http://localhost:3000", "http://127.0.0.1:3000"]
+        # База данных
+        self.database_url: str = os.getenv(
+            "DATABASE_URL",
+            "sqlite:///./neurocoach.db"
+        )
 
-    class Config:
-        env_file = ".env"
-        case_sensitive = False
+        # CORS
+        self.cors_origins: list = ["http://localhost:3000", "http://127.0.0.1:3000"]
 
 
 # Создаем экземпляр настроек
 settings = Settings()
-
-# Перезаписываем из переменных окружения, если они есть
-settings.openrouter_api_key = os.getenv("OPENROUTER_API_KEY", settings.openrouter_api_key)
-settings.openai_api_key = os.getenv("OPENAI_API_KEY", settings.openai_api_key)
-settings.database_url = os.getenv("DATABASE_URL", settings.database_url)
