@@ -1,153 +1,263 @@
-# backend/utils/constants.py
+# utils/constants.py
 
-from typing import Dict, Optional, Literal, TypedDict
+from __future__ import annotations
 
-
-# ===== ТИПЫ МЕТРИК ФОРМЫ =====
-
-STRENGTH: str = "strength"
-ENDURANCE: str = "endurance"
-WELLBEING: str = "wellbeing"
-
-MetricType = Literal["strength", "endurance", "wellbeing"]
+from dataclasses import dataclass
+from enum import Enum
+from typing import Optional, Dict
 
 
-class ExercisePointsCfg(TypedDict, total=False):
+# ===== Базовые типы =====
+
+class ExerciseCategory(str, Enum):
+    """Категория упражнения — для фильтрации, статистики и т.п."""
+    STRENGTH = "strength"                 # силовые по повторам
+    STRENGTH_ENDURANCE = "strength_mix"   # статика/пресс по времени
+    ENDURANCE = "endurance"               # кардио
+    WELLBEING = "wellbeing"               # растяжка/дыхание
+
+
+class MeasureType(str, Enum):
+    """Чем измеряется упражнение."""
+    REPS = "reps"     # считаем повторы
+    TIME = "time"     # считаем секунды
+
+
+@dataclass(frozen=True)
+class ExerciseConfig:
     """
-    Конфиг для одного упражнения.
-
-    type    — какая метрика качается (strength / endurance / wellbeing)
-    per_rep — сколько очков за 1 повтор
-    per_10s — сколько очков за каждые 10 секунд
-    per_30s — сколько очков за каждые 30 секунд
+    Описание упражнения и правил начисления очков.
+    - measure_type:
+        REPS  -> передаём количество повторов
+        TIME  -> передаём количество секунд
+    - points_per_unit:
+        REPS -> очков за 1 повтор
+        TIME -> очков за один интервал времени (seconds_per_unit)
     """
-    type: MetricType
-    per_rep: int
-    per_10s: int
-    per_30s: int
+    slug: str
+    label: str              # Человеческое название
+    emoji: str
+    category: ExerciseCategory
+    measure_type: MeasureType
+    points_per_unit: int
+    seconds_per_unit: Optional[int] = None  # только для TIME-упражнений
 
 
-# ===== ОЧКИ ЗА УПРАЖНЕНИЯ =====
+# ===== Список всех упражнений =====
+# slug — строковый id, который ты будешь использовать в коде/БД
 
-EXERCISE_POINTS: Dict[str, ExercisePointsCfg] = {
-    # ---- СИЛОВЫЕ (strength) — по повторам ----
-    "squat":        {"type": STRENGTH, "per_rep": 2},  # приседания
-    "lunge":        {"type": STRENGTH, "per_rep": 3},  # выпады
-    "pushup":       {"type": STRENGTH, "per_rep": 3},  # отжимания обычные
-    "pushup_knees": {"type": STRENGTH, "per_rep": 2},  # отжимания с колен
-    "pushup_wall":  {"type": STRENGTH, "per_rep": 1},  # отжимания от стены/стула
-    "glute_bridge": {"type": STRENGTH, "per_rep": 2},  # ягодичный мостик
-    "crunch":       {"type": STRENGTH, "per_rep": 1},  # скручивания на пресс
-    "boat":         {"type": STRENGTH, "per_rep": 2},  # "лодочка"
+EXERCISES: Dict[str, ExerciseConfig] = {
+    # --- 1. Силовые (strength), считаем за 1 повтор ---
 
-    # ---- СТАТИКА (strength) — по времени ----
-    "plank":      {"type": STRENGTH, "per_10s": 4},  # планка обычная
-    "plank_easy": {"type": STRENGTH, "per_10s": 2},  # лёгкая планка (от колен/стены)
-    "wall_sit":   {"type": STRENGTH, "per_10s": 3},  # статика в приседе
+    "squat": ExerciseConfig(
+        slug="squat",
+        label="Приседания",
+        emoji="🦵",
+        category=ExerciseCategory.STRENGTH,
+        measure_type=MeasureType.REPS,
+        points_per_unit=2,  # 2 балла за 1 повтор
+    ),
+    "lunge": ExerciseConfig(
+        slug="lunge",
+        label="Выпады",
+        emoji="🦵",
+        category=ExerciseCategory.STRENGTH,
+        measure_type=MeasureType.REPS,
+        points_per_unit=3,  # 3 балла за 1 повтор
+    ),
+    "pushup_standard": ExerciseConfig(
+        slug="pushup_standard",
+        label="Отжимания обычные",
+        emoji="💪",
+        category=ExerciseCategory.STRENGTH,
+        measure_type=MeasureType.REPS,
+        points_per_unit=3,
+    ),
+    "pushup_knees": ExerciseConfig(
+        slug="pushup_knees",
+        label="Отжимания с колен",
+        emoji="💪",
+        category=ExerciseCategory.STRENGTH,
+        measure_type=MeasureType.REPS,
+        points_per_unit=2,
+    ),
+    "pushup_wall": ExerciseConfig(
+        slug="pushup_wall",
+        label="Отжимания от стены/стула",
+        emoji="💪",
+        category=ExerciseCategory.STRENGTH,
+        measure_type=MeasureType.REPS,
+        points_per_unit=1,
+    ),
+    "glute_bridge": ExerciseConfig(
+        slug="glute_bridge",
+        label="Ягодичный мостик",
+        emoji="🍑",
+        category=ExerciseCategory.STRENGTH,
+        measure_type=MeasureType.REPS,
+        points_per_unit=2,
+    ),
+    "chair_dips": ExerciseConfig(
+        slug="chair_dips",
+        label="Обратные отжимания от стула",
+        emoji="🧱",
+        category=ExerciseCategory.STRENGTH,
+        measure_type=MeasureType.REPS,
+        points_per_unit=3,
+    ),
+    "crunch": ExerciseConfig(
+        slug="crunch",
+        label="Скручивания на пресс",
+        emoji="📦",
+        category=ExerciseCategory.STRENGTH,
+        measure_type=MeasureType.REPS,
+        points_per_unit=1,
+    ),
+    "boat": ExerciseConfig(
+        slug="boat",
+        label="Упражнение «Лодочка»",
+        emoji="🛶",
+        category=ExerciseCategory.STRENGTH,
+        measure_type=MeasureType.REPS,
+        points_per_unit=2,
+    ),
 
-    # ---- КАРДИО (endurance) — по времени ----
-    "run_in_place": {"type": ENDURANCE, "per_10s": 2},  # бег/марш на месте, шаги в стороны
-    "jumping_jack": {"type": ENDURANCE, "per_10s": 3},  # джампинг-джеки
-    "shadow_box":   {"type": ENDURANCE, "per_10s": 3},  # удары в воздух / бой с тенью
-    "burpee":       {"type": ENDURANCE, "per_10s": 5},  # бёрпи – премиум страдания
+    # --- 2. Статика и пресс по времени (strength/endurance mix) ---
+    # Считаем ЗА КАЖДЫЕ 10 СЕКУНД
 
-    # ---- РАСТЯЖКА / ДЫХАНИЕ (wellbeing) — по времени ----
-    "stretch":   {"type": WELLBEING, "per_30s": 1},  # любая растяжка
-    "breathing": {"type": WELLBEING, "per_30s": 1},  # дыхательные практики
+    "plank": ExerciseConfig(
+        slug="plank",
+        label="Планка (обычная)",
+        emoji="🧱",
+        category=ExerciseCategory.STRENGTH_ENDURANCE,
+        measure_type=MeasureType.TIME,
+        seconds_per_unit=10,     # интервал 10 секунд
+        points_per_unit=4,       # 4 балла / 10 сек
+    ),
+    "plank_easy": ExerciseConfig(
+        slug="plank_easy",
+        label="Планка облегчённая (от колен/у стены)",
+        emoji="🧱",
+        category=ExerciseCategory.STRENGTH_ENDURANCE,
+        measure_type=MeasureType.TIME,
+        seconds_per_unit=10,
+        points_per_unit=2,       # 2 балла / 10 сек
+    ),
+    "wall_sit": ExerciseConfig(
+        slug="wall_sit",
+        label="Статический присед (сидим внизу)",
+        emoji="🧘",
+        category=ExerciseCategory.STRENGTH_ENDURANCE,
+        measure_type=MeasureType.TIME,
+        seconds_per_unit=10,
+        points_per_unit=3,       # 3 балла / 10 сек
+    ),
+
+    # --- 3. Кардио (endurance) ---
+    # Считаем ЗА КАЖДЫЕ 10 СЕКУНД
+
+    "run_in_place": ExerciseConfig(
+        slug="run_in_place",
+        label="Бег/марш на месте",
+        emoji="🏃",
+        category=ExerciseCategory.ENDURANCE,
+        measure_type=MeasureType.TIME,
+        seconds_per_unit=10,
+        points_per_unit=2,       # 2 балла / 10 сек
+    ),
+    "jumping_jacks": ExerciseConfig(
+        slug="jumping_jacks",
+        label="Джампинг-джеки",
+        emoji="⭐",
+        category=ExerciseCategory.ENDURANCE,
+        measure_type=MeasureType.TIME,
+        seconds_per_unit=10,
+        points_per_unit=3,       # 3 балла / 10 сек
+    ),
+    "shadow_boxing": ExerciseConfig(
+        slug="shadow_boxing",
+        label="Удары в воздух / бой с тенью",
+        emoji="🥊",
+        category=ExerciseCategory.ENDURANCE,
+        measure_type=MeasureType.TIME,
+        seconds_per_unit=10,
+        points_per_unit=3,       # 3 балла / 10 сек
+    ),
+    "burpee": ExerciseConfig(
+        slug="burpee",
+        label="Бёрпи",
+        emoji="💀",
+        category=ExerciseCategory.ENDURANCE,
+        measure_type=MeasureType.TIME,
+        seconds_per_unit=10,
+        points_per_unit=5,       # 5 баллов / 10 сек
+    ),
+
+    # --- 4. Растяжка и дыхание (wellbeing) ---
+    # Считаем ЗА КАЖДЫЕ 30 СЕКУНД
+
+    "stretching": ExerciseConfig(
+        slug="stretching",
+        label="Растяжка (ноги/спина/руки)",
+        emoji="🤸",
+        category=ExerciseCategory.WELLBEING,
+        measure_type=MeasureType.TIME,
+        seconds_per_unit=30,
+        points_per_unit=1,       # 1 балл / 30 сек
+    ),
+    "breathing": ExerciseConfig(
+        slug="breathing",
+        label="Дыхательные упражнения",
+        emoji="😮‍💨",
+        category=ExerciseCategory.WELLBEING,
+        measure_type=MeasureType.TIME,
+        seconds_per_unit=30,
+        points_per_unit=1,       # 1 балл / 30 сек
+    ),
 }
 
 
-def empty_score() -> Dict[str, float]:
-    """
-    Пустой словарь очков по метрикам, удобно для инициализации.
-    """
-    return {
-        STRENGTH: 0.0,
-        ENDURANCE: 0.0,
-        WELLBEING: 0.0,
-    }
-
+# ===== Универсальная функция подсчёта очков =====
 
 def calculate_exercise_points(
-    exercise_id: str,
+    slug: str,
     reps: Optional[int] = None,
     seconds: Optional[int] = None,
-) -> Dict[str, float]:
+) -> int:
     """
-    Посчитать очки за одно упражнение.
+    Универсальный расчёт очков по slug упражнения.
 
-    Возвращает dict:
-        {
-          "strength": float,
-          "endurance": float,
-          "wellbeing": float,
-        }
+    Для measure_type == REPS:
+        - передаём reps
+        - seconds игнорируется
+        - формула: reps * points_per_unit
 
-    Примеры:
-        calculate_exercise_points("squat", reps=15)
-        calculate_exercise_points("plank", seconds=30)
-        calculate_exercise_points("jumping_jack", seconds=20)
+    Для measure_type == TIME:
+        - передаём seconds
+        - используется только полное количество интервалов
+          (10 или 30 секунд, в зависимости от seconds_per_unit):
+          units = seconds // seconds_per_unit
+          points = units * points_per_unit
     """
-    score = empty_score()
-    cfg = EXERCISE_POINTS.get(exercise_id)
+    if slug not in EXERCISES:
+        raise ValueError(f"Неизвестное упражнение: {slug}")
 
-    if not cfg:
-        # неизвестное упражнение — просто нули
-        return score
+    cfg = EXERCISES[slug]
 
-    metric: MetricType = cfg["type"]
+    if cfg.measure_type == MeasureType.REPS:
+        if reps is None:
+            raise ValueError("Для упражнений по повторам нужно передать reps")
+        if reps < 0:
+            raise ValueError("Количество повторов не может быть отрицательным")
+        return reps * cfg.points_per_unit
 
-    # Баллы за повторы
-    per_rep = cfg.get("per_rep")
-    if per_rep is not None and reps is not None:
-        score[metric] += float(per_rep * reps)
+    # TIME-based
+    if seconds is None:
+        raise ValueError("Для упражнений по времени нужно передать seconds")
+    if seconds < 0:
+        raise ValueError("Время не может быть отрицательным")
+    if not cfg.seconds_per_unit:
+        raise RuntimeError("seconds_per_unit не задан для TIME-упражнения")
 
-    # Баллы за время (per_10s)
-    per_10s = cfg.get("per_10s")
-    if per_10s is not None and seconds is not None:
-        units_10s = seconds / 10.0
-        score[metric] += float(per_10s) * units_10s
-
-    # Баллы за время (per_30s)
-    per_30s = cfg.get("per_30s")
-    if per_30s is not None and seconds is not None:
-        units_30s = seconds / 30.0
-        score[metric] += float(per_30s) * units_30s
-
-    return score
-
-
-# ===== СЦЕНАРИИ ДЛЯ ПРОГНОЗА ФОРМЫ НА 30 ДНЕЙ =====
-
-FORECAST_SCENARIOS: Dict[str, Dict[str, float | str]] = {
-    # Режим паузы — ничего не делаем
-    "no_training": {
-        "mult": 0.0,
-        "label": "Режим паузы",
-    },
-    # Минималка — короткие, лёгкие сессии
-    "minimal": {
-        "mult": 0.4,
-        "label": "Минималка",
-    },
-    # По плану — нормальный режим
-    "plan": {
-        "mult": 1.0,
-        "label": "По плану",
-    },
-    # Турбо — плюс сверх плана
-    "turbo": {
-        "mult": 1.4,
-        "label": "Турбо-режим",
-    },
-}
-
-# Коэффициенты распада формы (используйте в forecast_engine.py)
-DECAY_STRENGTH: float = 0.03
-DECAY_ENDURANCE: float = 0.03
-DECAY_WELLBEING: float = 0.02
-
-# Базовый "идеальный" дневной прирост при сценарии mult=1.0
-BASE_GAIN_STRENGTH: float = 3.0
-BASE_GAIN_ENDURANCE: float = 2.5
-BASE_GAIN_WELLBEING: float = 1.5
+    units = seconds // cfg.seconds_per_unit  # считаем только полные интервалы
+    return int(units * cfg.points_per_unit)
