@@ -1,7 +1,7 @@
 from typing import List, Dict, Any
 
 from openrouter import OpenRouter
-from core.config import settings
+from backend.core.config import settings
 
 
 class OpenAIClient:

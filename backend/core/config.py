@@ -1,29 +1,24 @@
-import os
-from typing import Optional
+
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-class Settings:
-    """Настройки приложения"""
+class Settings(BaseSettings):
+    # ====== ОБЪЯВЛЯЕМ ВСЕ ПОЛЯ ТУТ ======
+    app_name: str = "NeuroCoach Vibe"
+    openrouter_api_key: str  # берётся из .env
 
-    def __init__(self):
-        # Основные настройки
-        self.app_name: str = "NeuroCoach Vibe"
-        self.debug: bool = True
-        self.api_prefix: str = "/api/v1"
-
-        # API ключи
-        self.openrouter_api_key: Optional[str] = os.getenv("OPENROUTER_API_KEY")
-        self.openai_api_key: Optional[str] = os.getenv("OPENAI_API_KEY")
-
-        # База данных
-        self.database_url: str = os.getenv(
-            "DATABASE_URL",
-            "sqlite:///./neurocoach.db"
-        )
-
-        # CORS
-        self.cors_origins: list = ["http://localhost:3000", "http://127.0.0.1:3000"]
+    # если есть ещё что-то (DB_URL, DEBUG и т.п.), добавь сюда:
+    database_url: str = "sqlite:///./neurocoach.db"
+    debug: bool = True
+    api_prefix: str = "/api"
 
 
-# Создаем экземпляр настроек
+    # ====== КОНФИГ Pydantic v2 ======
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+    )
+
+
+# НИКАКОГО своего __init__ тут не нужно!
 settings = Settings()
