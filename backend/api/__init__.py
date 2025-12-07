@@ -2,12 +2,9 @@
 API модуль - содержит все эндпоинты
 """
 
-from .endpoints import vibe, workout, coach, profile, forecast
+from fastapi import APIRouter
+from backend.api.endpoints import coach_router, vibe_router, workout_router, profile_router, forecast_router
 
-__all__ = [
-    "vibe",
-    "workout",
-    "coach",
-    "profile",
-    "forecast",
-]
+api_router = APIRouter()
+api_router.include_router(coach_router, prefix="/coach", tags=["coach"])
+# остальное по желанию
