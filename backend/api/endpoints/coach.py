@@ -2,9 +2,10 @@ from fastapi import APIRouter, HTTPException
 from typing import Literal
 from pydantic import BaseModel, Field
 import httpx
-import os
 
-router = APIRouter()
+from backend.core.config import settings  # <-- вот это важно
+
+router = APIRouter(prefix="/coach", tags=["coach"])
 
 
 class CoachCommentRequest(BaseModel):
@@ -28,7 +29,7 @@ async def generate_coach_comment_with_ai(
         context: str = ""
 ) -> str:
     """Генерирует комментарий тренера через AI"""
-    api_key = os.getenv("OPENROUTER_API_KEY") or os.getenv("OPENAI_API_KEY")
+    api_key = settings.openrouter_api_key  # <-- а не os.getenv
 
     if not api_key:
         return generate_fallback_comment(style, success)
@@ -60,7 +61,7 @@ async def generate_coach_comment_with_ai(
                     "Content-Type": "application/json"
                 },
                 json={
-                    "model": "openai/gpt-3.5-turbo",
+                    "model": "@preset/neuro-trainer",
                     "messages": [{"role": "user", "content": prompt}],
                     "temperature": 0.7,
                     "max_tokens": 50
