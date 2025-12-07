@@ -13,3 +13,6 @@ class User(Base):
     preferences = Column(JSON, default={})
     created_at = Column(DateTime, default=datetime.utcnow)
 
+    rating = Column(Integer, nullable=False, default=0)         # текущий рейтинг
+    rating_level = Column(String, nullable=False, default="Новичок")  # название уровня
+
