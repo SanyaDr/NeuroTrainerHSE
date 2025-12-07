@@ -18,23 +18,29 @@ async def assess_current_vibe(
     """
     Анализирует текущее состояние пользователя
     """
-    analyzer = VibeAnalyzer()
+    try:
+        analyzer = VibeAnalyzer()
 
-    # Если есть текст или аудио - анализируем через LLM
-    if user_input or audio_url:
-        vibe_result = await analyzer.analyze_from_text(user_input, audio_url)
-    else:
-        # Используем числовые оценки
-        vibe_result = analyzer.analyze_from_scores(
-            fatigue_level, stress_level, motivation_level
-        )
+        if user_input:
+            # Анализ текста через AI
+            result = await analyzer.analyze_from_text(user_input)
+        else:
+            # Анализ по числовым оценкам
+            result = analyzer.analyze_from_scores(
+                fatigue_level, stress_level, motivation_level
+            )
 
-    return {
-        "vibe_mode": vibe_result.mode,
-        "confidence": vibe_result.confidence,
-        "mood_description": vibe_result.description,
-        "recommended_intensity": vibe_result.recommended_intensity
-    }
+        return {
+            "success": True,
+            "vibe_mode": result.mode,
+            "confidence": result.confidence,
+            "mood_description": result.description,
+            "recommended_intensity": result.recommended_intensity
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.post("/generate-workout")
 async def generate_workout_from_vibe(
