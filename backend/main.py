@@ -2,14 +2,15 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 # Импорты из нашего пакета
-from .core.config import settings
-from .core.database import create_tables
-from .api.endpoints import vibe_router
-from .api.endpoints import workout_router
-from .api.endpoints import profile_router
-from .api.endpoints import forecast_router
-from .api.endpoints import coach_router
-
+from backend.core.config import settings
+from backend.core.database import create_tables
+from backend.api.endpoints import (
+    vibe_router,
+    workout_router,
+    coach_router,
+    profile_router,
+    forecast_router,
+)
 # Создаем таблицы при старте
 create_tables()
 
@@ -33,6 +34,7 @@ app.add_middleware(
 
 # Подключаем только работающие роутеры
 app.include_router(vibe_router, prefix=settings.api_prefix, tags=["vibe"])
+# Остальные закомментированы до создания
 app.include_router(workout_router, prefix=settings.api_prefix, tags=["workout"])
 app.include_router(coach_router, prefix=settings.api_prefix, tags=["coach"])
 app.include_router(profile_router, prefix=settings.api_prefix, tags=["profile"])
