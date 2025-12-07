@@ -2,7 +2,7 @@
 Сервисный слой - бизнес-логика
 """
 
-from vibeAnalizer import VibeAnalyzer
+'''from vibeAnalizer import VibeAnalyzer
 from workoutGenerator import WorkoutGenerator
 from coachAi import CoachAI
 from profileBuilder import ProfileBuilder
@@ -14,4 +14,4 @@ __all__ = [
     "CoachAI",
     "ProfileBuilder",
     "ForecastEngine",
-]
+]'''
