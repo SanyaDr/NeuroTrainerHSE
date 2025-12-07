@@ -2,9 +2,8 @@
 
 :root {
   font-family: "Roboto Mono", monospace;
-  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
-  background-color: #000000;
+  background-color: #000;
   color: #f9fafb;
 }
 
@@ -17,343 +16,655 @@
 body {
   margin: 0;
   min-height: 100vh;
+  background: #000;
 }
 
 #root {
   min-height: 100vh;
 }
 
-/* ===== APP LAYOUT ===== */
+/* ===== ОБЩИЙ ЛЕЙАУТ ПОД ПК ===== */
 
-.od-app {
+.ov-app {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: radial-gradient(circle at top left, #0f172a 0%, #020617 50%, #000 100%);
-  color: #e5e7eb;
+  background: #000000;
+  color: #ffffff;
 }
 
-/* ===== HEADER ===== */
+/* ===== ХЕДЕР ===== */
 
-.od-header {
-  position: sticky;
-  top: 0;
-  z-index: 10;
+.ov-header {
   display: flex;
   align-items: center;
-  padding: 18px 32px 12px;
-  gap: 32px; /* расстояние между логотипом и меню */
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.95), rgba(0, 0, 0, 0.7));
-  backdrop-filter: blur(22px);
-  border-bottom: 1px solid rgba(148, 163, 184, 0.35);
+  padding: 16px 48px 10px;
+  background: #000000;
+  gap: 40px;
 }
-
 
 /* логотип OVERDRIVE */
-.od-logo {
+
+.ov-logo {
   font-size: 24px;
   font-weight: 700;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  background: linear-gradient(90deg, #fb37ff, #ff4d94, #ff9aa2);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: #ff4fa6;
 }
 
-.od-nav-item {
-  position: relative;
+/* навигация: тренировка / история / статистика */
+
+.ov-nav {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+}
+
+.ov-nav-item {
+  font-size: 13px;
+  text-transform: lowercase;
+  color: #e5e7eb;
+  opacity: 0.7;
   border: none;
   background: none;
-  font-size: 14px;
-  padding: 4px 0;
   cursor: pointer;
-  color: #9ca3af;
+  padding: 0;
 }
 
-.od-nav-item:focus,
-.od-nav-item:focus-visible {
-  outline: none;
-  box-shadow: none;
-}
-.od-login-btn:focus,
-.od-login-btn:focus-visible {
-  outline: none;
-  box-shadow: none;
-}
-
-.od-nav-item--active {
+.ov-nav-item--active {
   color: #facc15;
+  opacity: 1;
+  position: relative;
 }
 
-.od-nav-item--active::after {
+.ov-nav-item--active::after {
   content: "";
   position: absolute;
   left: 0;
   right: 0;
-  bottom: -4px;
   margin: 0 auto;
-  width: 80%;
+  bottom: -3px;
+  width: 90%;
   height: 2px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, #facc15, #f97316);
+  background: #facc15;
 }
 
-/* навигация — отдельный блок, не растягиваем её */
-.od-nav {
-  flex: 0 0 auto;
-  display: flex;
-  gap: 28px;
-  align-items: center;
-}
+/* правый блок шапки */
 
-/* правый блок — всегда одной ширины, чтобы меню не прыгало */
-.od-header-right {
+.ov-header-right {
   margin-left: auto;
   display: flex;
   align-items: center;
   gap: 16px;
-  min-width: 130px;          /* фиксирует ширину под "эти" / "В сети" + аватар */
+  min-width: 140px;
   justify-content: flex-end;
 }
 
+/* кнопка Войти / В сети */
 
-.od-user-icon {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  min-width: 40px;
-}
-
-.od-user-circle {
-  width: 28px;
-  height: 28px;
+.ov-login-btn {
+  border: none;
   border-radius: 999px;
-  border: 1px solid rgba(148, 163, 184, 0.6);
+  padding: 7px 16px;
+  font-size: 12px;
+  cursor: pointer;
+  background: #0ea5e9;
+  color: #0b1120;
+}
+
+.ov-login-btn:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+
+.ov-login-btn:focus,
+.ov-login-btn:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+/* иконка профиля */
+
+.ov-user-small {
   display: flex;
   align-items: center;
-  justify-content: center;
-  background: radial-gradient(circle at top, #1f2937 0%, #020617 80%);
-  box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.8);
+  justify-content: flex-end;
+  min-width: 32px;
 }
 
-.od-user-initial {
-  font-size: 14px;
+.ov-user-icon {
+  width: 24px;
+  height: 24px;
+  display: block;
+  object-fit: contain;
 }
 
-/* ===== MAIN AREA ===== */
+/* ===== ОСНОВНОЙ БЛОК ===== */
 
-.od-main {
+.ov-main {
   position: relative;
   flex: 1;
-  padding: 0;
-  display: flex;
-  justify-content: stretch;
-  align-items: stretch;
-  overflow: hidden;
+  display: block;
+  padding: 40px 0 60px;
 }
 
+/* баннер авторизации */
 
-/* неоновые пятна на фоне */
-.od-bg-glow {
+.ov-auth-banner {
   position: absolute;
-  width: 340px;
-  height: 340px;
-  border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.4;
-  pointer-events: none;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 12px;
+  border-radius: 0;
+  background: rgba(15, 23, 42, 0.95);
+  color: #e5e7eb;
+  font-size: 11px;
+  border: 1px solid rgba(148, 163, 184, 0.7);
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.od-bg-glow-left {
-  background: radial-gradient(circle, rgba(251, 56, 255, 0.9), transparent 60%);
-  left: -120px;
-  top: 40%;
+.ov-auth-text {
+  white-space: nowrap;
 }
 
-.od-bg-glow-right {
-  background: radial-gradient(circle, rgba(56, 189, 248, 0.9), transparent 60%);
-  right: -120px;
-  top: 10%;
+.ov-auth-close {
+  border: none;
+  background: transparent;
+  color: #9ca3af;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
 }
 
-.od-main-inner {
-  position: relative;
-  z-index: 1;
+.ov-auth-close:focus,
+.ov-auth-close:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+/* контейнер контента */
+
+.ov-main-inner {
   width: 100%;
-  max-width: none;   /* больше не ограничиваем ширину */
+  margin: 0 auto;
   display: flex;
   justify-content: center;
 }
 
+/* узкий центр (экран тренировки) */
+.ov-main-inner--narrow {
+  max-width: 520px;
+}
 
+/* широкий центр (история / детали / статистика) */
+.ov-main-inner--wide {
+  max-width: 920px;
+}
 
+/* ===== ЭКРАН ТРЕНИРОВКИ ===== */
 
-/* ===== EMOTION PANEL ===== */
-
-.emotion-panel {
+.ov-training-card {
   width: 100%;
-  height: 100%;
-  margin: 0;
-  border-radius: 0;              /* если хочешь оставить скругление – можешь вернуть 32px */
-  padding: 32px 40px 40px;
-  background: radial-gradient(circle at top, #e5f0f5 0%, #cbd5e1 40%, #bcd0df 80%);
-  box-shadow: none;              /* тень убираем, чтобы не висело «окошко» */
-  color: #111827;
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-
-
-.emotion-question {
-  font-size: 22px;
-  font-weight: 600;
+  gap: 26px;
   text-align: center;
-  margin: 4px 0 24px;
+}
+/* ===== ЭКРАН ТРЕНИРОВКИ — СЕССИЯ ===== */
+
+.training-session {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
 }
 
-/* круг как на скрине */
-.emotion-circle-wrapper {
-  margin-top: 4px;
-  margin-bottom: 20px;
+.training-session-caption {
+  font-size: 11px;
+  color: #a1a1aa;
 }
 
-.emotion-circle {
-  width: 280px;
-  height: 280px;
+.training-session-timer {
+  font-family: "Roboto Mono", monospace;
+  font-size: 20px;
+  letter-spacing: 0.1em;
+  margin-bottom: 4px;
+}
+
+.training-session-pause-btn {
+  border: none;
+  background: #facc15;
+  color: #000000;
+  font-size: 13px;
+  padding: 6px 24px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.training-session-pause-btn:focus,
+.training-session-pause-btn:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.training-session-avatar {
+  width: 190px;
+  height: 190px;
   border-radius: 50%;
-  position: relative;
-  background: radial-gradient(
-    circle at center,
-    rgba(59, 189, 255, 0.9) 0%,
-    rgba(59, 189, 255, 0.45) 30%,
-    rgba(59, 189, 255, 0.16) 55%,
-    rgba(59, 189, 255, 0.05) 80%,
-    transparent 100%
-  );
-  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.3);
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.training-session-avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.training-session-quote {
+  max-width: 420px;
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.training-session-reps {
+  font-size: 32px;
+  font-weight: 700;
+  margin-top: 10px;
+}
+
+.training-session-set-caption {
+  font-size: 11px;
+  color: #a1a1aa;
+}
+
+.training-session-set-number {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.training-session-actions {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 260px;
+}
+
+.training-btn {
+  border: none;
+  border-radius: 0;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 700;
+  text-transform: lowercase;
+  cursor: pointer;
+}
+
+.training-btn--green {
+  background: #16a34a;
+  color: #000000;
+}
+
+.training-btn--red {
+  background: #dc2626;
+  color: #000000;
+}
+
+/* аватар эмоции */
+
+.ov-avatar-big {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.ov-avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* секции надписей */
+
+.ov-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.ov-section-caption {
+  font-size: 11px;
+  text-transform: lowercase;
+  color: #a1a1aa;
+}
+
+/* ряд кнопок */
+
+.ov-options-row {
+  display: flex;
+  gap: 26px;
+}
+
+.ov-option-btn {
+  border: none;
+  background: none;
+  font-size: 18px;
+  text-transform: lowercase;
+  color: #d4d4d8;
+  cursor: pointer;
+  padding: 0;
+}
+
+.ov-option-btn--active {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.ov-section-duration {
+  margin-top: 6px;
+}
+
+/* поле времени */
+
+.ov-duration-input {
+  margin-top: 6px;
+  width: 160px;
+  padding: 10px 18px;
+  font-family: "Roboto Mono", monospace;
+  font-size: 20px;
+  text-align: center;
+  border: none;
+  outline: none;
+  background: #ffffff;
+  color: #000000;
+}
+
+/* кнопка СТАРТ — квадратная, зелёная, чёрный текст */
+
+.ov-start-btn {
+  margin-top: 10px;
+  padding: 16px 90px;
+  border: none;
+  cursor: pointer;
+  background: #16a34a;
+  color: #000000;
+  font-size: 18px;
+  font-weight: 700;
+  text-transform: lowercase;
+  border-radius: 0;
+}
+
+/* убрать браузерные рамки */
+
+.ov-option-btn:focus,
+.ov-option-btn:focus-visible,
+.ov-start-btn:focus,
+.ov-start-btn:focus-visible,
+.ov-nav-item:focus,
+.ov-nav-item:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+/* ===== ИСТОРИЯ: СПИСОК ===== */
+
+.history-wrapper {
+  width: 100%;
+  margin-top: 40px;
+  color: #f5f5f5;
+  font-size: 12px;
+}
+
+/* заголовок таблицы */
+
+.history-header-row {
+  max-width: 720px;
+  margin: 0 auto 16px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+  text-transform: lowercase;
+  color: #d4d4d8;
+}
+
+.history-header-row span {
+  text-align: center;
+}
+
+/* таблица строк */
+
+.history-table {
+  max-width: 720px;
+  margin: 0 auto;
+  display: grid;
+  grid-auto-rows: 42px;   /* одинаковая высота строки */
+  row-gap: 8px;
+}
+
+/* строка */
+
+.history-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  column-gap: 16px;
+}
+
+.history-cell {
+  width: 100%;
+}
+
+/* белые прямоугольники */
+
+.history-box {
+  width: 100%;
+  height: 42px;
+  box-sizing: border-box;
+  background: #ffffff;
+  color: #000000;
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.history-box--date {
+  font-family: "Roboto Mono", monospace;
+}
+
+.history-box--mood {
+  justify-content: flex-start;
+}
+
+.history-box--mode {
+  text-transform: lowercase;
+}
+
+/* кликабельность */
+
+.history-box--clickable {
+  cursor: pointer;
+}
+
+/* аватар и текст настроения */
+
+.history-mood-inner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.history-avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* ===== ИСТОРИЯ: ЭКРАН ДЕТАЛЕЙ ===== */
+
+.history-detail {
+  width: 100%;
+  margin-top: 40px;
+  color: #f5f5f5;
+}
+
+/* кнопка назад */
+
+.history-back-btn {
+  border: none;
+  background: none;
+  color: #ffffff;
+  font-size: 20px;
+  cursor: pointer;
+  margin-bottom: 12px;
+}
+
+.history-back-btn:focus,
+.history-back-btn:focus-visible {
+  outline: none;
+}
+
+/* верхний блок: аватар + карточка */
+
+.history-detail-top {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  max-width: 720px;
+  margin: 0 auto 24px;
+}
+
+.history-detail-avatar {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
   overflow: hidden;
 }
 
-.emotion-circle::before,
-.emotion-circle::after {
-  content: "";
-  position: absolute;
-  inset: 16%;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.6);
-}
-
-.emotion-circle::after {
-  inset: 32%;
-  border-color: rgba(255, 255, 255, 0.4);
-}
-
-.emotion-circle-inner {
-  position: absolute;
-  inset: 44%;
-  border-radius: 50%;
-  background: radial-gradient(circle at center, #f9fafb 0%, transparent 70%);
-}
-
-.emotion-label {
-  margin-top: 4px;
-  font-size: 22px;
-  font-weight: 600;
-  text-align: center;
-}
-
-/* слайдер эмоций */
-
-.emotion-slider-block {
+.history-detail-avatar-img {
   width: 100%;
-  max-width: 420px;
-  margin-top: 26px;
-  margin-bottom: 18px;
-}
-
-.emotion-slider {
-  width: 100%;
-  -webkit-appearance: none;
-  appearance: none;
-  height: 28px;
-  border-radius: 999px;
-  background: #d1d5db;
-  outline: none;
-  padding: 0 14px;
-  box-sizing: border-box;
-}
-
-.emotion-slider::-webkit-slider-runnable-track {
-  height: 4px;
-  border-radius: 999px;
-  background: transparent;
-}
-.emotion-slider::-moz-range-track {
-  height: 4px;
-  border-radius: 999px;
-  background: transparent;
-}
-
-.emotion-slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 22px;
-  height: 22px;
+  height: 100%;
   border-radius: 50%;
-  background: #ffffff;
-  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.2);
-  margin-top: -9px;
-}
-.emotion-slider::-moz-range-thumb {
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: #ffffff;
-  border: none;
-  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.2);
+  object-fit: cover;
 }
 
-.emotion-slider-caption {
-  margin-top: 6px;
+/* карточка справа */
+
+.history-detail-card {
+  flex: 1;
+  background: #ffffff;
+  color: #000000;
+  padding: 16px 20px;
+}
+
+.history-detail-card-title {
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+
+.history-detail-row {
   display: flex;
   justify-content: space-between;
-  font-size: 11px;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.history-detail-label {
+  color: #4b5563;
+}
+
+.history-detail-value {
   font-weight: 500;
-  color: #6b7280;
 }
 
-/* кнопка Далее */
-
-.primary-btn {
-  margin-top: 6px;
-  width: 100%;
-  max-width: 280px;
-  border: none;
-  border-radius: 999px;
-  padding: 12px 16px;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  background: #10a1d6;
-  color: #f9fafb;
-  box-shadow: 0 10px 26px rgba(37, 99, 235, 0.6);
+.history-detail-value--green {
+  color: #16a34a;
 }
 
-/* ===== PLACEHOLDER PANELS ===== */
+/* блок упражнений */
+
+.history-detail-exercises {
+  max-width: 720px;
+  margin: 0 auto;
+  margin-top: 16px;
+}
+
+.history-detail-exercises-title {
+  text-align: center;
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+
+.history-detail-exercises-table {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* строка упражнения: 4 колонки */
+
+.history-detail-ex-row {
+  display: grid;
+  grid-template-columns: 1.3fr 3fr 1.6fr 1.4fr;
+  column-gap: 4px;
+}
+
+.history-detail-ex-sets {
+  font-size: 12px;
+  text-align: center;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.history-detail-ex-sets--ok {
+  background: #16a34a;
+}
+
+.history-detail-ex-sets--zero {
+  background: #dc2626;
+}
+
+.history-detail-ex-name,
+.history-detail-ex-status,
+.history-detail-ex-points {
+  background: #ffffff;
+  color: #000000;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== ПЛЕЙСХОЛДЕР ДЛЯ СТАТИСТИКИ ===== */
 
 .placeholder-panel {
   width: 100%;
-  height: 100%;
-  padding: 32px 40px 40px;
-  border-radius: 0;
-  background: radial-gradient(circle at top, #020617 0%, #020617 60%, #030712 100%);
-  border: none;
-  box-shadow: none;
+  max-width: 360px;
+  padding: 32px 20px;
   text-align: center;
 }
-
 
 .placeholder-panel h2 {
   margin: 0 0 8px;
@@ -366,88 +677,304 @@ body {
   color: #9ca3af;
 }
 
-/* ===== RESPONSIVE ===== */
+/* ===== СТАТИСТИКА ===== */
+
+.stats-wrapper {
+  width: 100%;
+  margin-top: 40px;
+  color: #f5f5f5;
+  font-size: 12px;
+}
+
+/* верхний блок: слева квадрат, справа карточка */
+
+.stats-top {
+  max-width: 720px;
+  margin: 0 auto 40px;
+  display: grid;
+  grid-template-columns: 1.1fr 2.1fr;
+  column-gap: 24px;
+  align-items: stretch;
+}
+
+/* левый серый квадрат "паутинка" */
+
+.stats-badge {
+  background: #000000;   /* можно оставить #5a5155, если нравится серый фон */
+  min-height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stats-radar {
+  width: 200px;
+  height: 200px;
+}
+
+.stats-radar-label {
+  fill: #e5e7eb;
+  font-size: 9px;        /* можно 8–10, как приятнее */
+  text-transform: lowercase;
+}
+
+
+
+/* белая карточка справа */
+
+.stats-card {
+  background: #ffffff;
+  color: #000000;
+  padding: 18px 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.stats-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.stats-title {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #ff4fa6;
+  line-height: 1.1;
+}
+
+.stats-cat-icon {
+  width: 60px;      /* подгони размер под свой PNG */
+  height: 60px;
+  object-fit: contain;
+  display: block;
+}
+
+
+/* тело карточки */
+
+.stats-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.stats-card-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+}
+
+.stats-label {
+  color: #4b5563;
+  text-transform: lowercase;
+}
+
+.stats-value {
+  font-weight: 600;
+}
+
+/* нижний блок "настроение" */
+
+.stats-mood-block {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.stats-mood-caption {
+  font-size: 11px;
+  color: #d4d4d8;
+  margin-bottom: 6px;
+}
+
+.mood-chart-container {
+  width: 100%;
+  min-height: 260px;
+  background: #5a5155;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  padding: 16px 24px;
+  box-sizing: border-box;
+}
+
+.mood-chart {
+  width: 100%;
+  height: 100%;
+}
+
+.mood-chart-label {
+  fill: #e5e7eb;
+  font-size: 11px;
+}
+
+.mood-chart-label--mood {
+  text-anchor: end;
+}
+
+.mood-chart-label--day {
+  text-anchor: middle;
+}
+
+
+/* ===== АДАПТИВ (минимальный) ===== */
 
 @media (max-width: 900px) {
-  .od-header {
+  .ov-header {
     padding: 14px 16px 8px;
-    gap: 8px;
+    gap: 20px;
   }
 
-  .od-logo {
-    font-size: 18px;
-    letter-spacing: 0.16em;
+  .ov-main {
+    padding: 24px 0 40px;
   }
 
-  .od-nav {
+  .ov-main-inner--narrow {
+    max-width: 100%;
+    padding: 0 16px;
+  }
+
+  .ov-main-inner--wide {
+    max-width: 100%;
+    padding: 0 16px;
+  }
+
+  .history-detail-top {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .history-detail-card {
+    width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .ov-nav {
     gap: 18px;
   }
 
-  .od-main {
-  padding: 0;
-}
-
-.emotion-panel {
-  border-radius: 0;
-  padding: 32px 40px 40px;
-}
-
-  .emotion-circle {
-    width: 230px;
-    height: 230px;
+  .ov-training-card {
+    gap: 20px;
   }
-}
-.od-login-btn {
-  border: none;
-  border-radius: 999px;
-  padding: 6px 10px;
-  font-size: 11px;
-  cursor: pointer;
-  background: #0ea5e9;
-  color: #0b1120;
-  margin-right: 8px;
-}
+/* ===== ЭКРАН ТРЕНИРОВКИ — СЕССИЯ ===== */
 
-.od-login-btn:disabled {
-  opacity: 0.6;
-  cursor: default;
-}
-
-/* баннер-подсказка про авторизацию */
-.od-auth-banner {
-  position: absolute;
-  top: 12px;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 8px 12px;
-  border-radius: 0; /* без скругления */
-  background: rgba(15, 23, 42, 0.95);
-  color: #e5e7eb;
-  font-size: 11px;
-  border: 1px solid rgba(148, 163, 184, 0.7);
-  z-index: 5;
+.training-session {
+  width: 100%;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 10px;
+  text-align: center;
+  gap: 12px;
 }
 
-.od-auth-text {
-  white-space: nowrap;
+.training-session-caption {
+  font-size: 11px;
+  color: #a1a1aa;
 }
 
-.od-auth-close {
+.training-session-timer {
+  font-family: "Roboto Mono", monospace;
+  font-size: 20px;
+  letter-spacing: 0.1em;
+  margin-bottom: 4px;
+}
+
+.training-session-pause-btn {
   border: none;
-  background: transparent;
-  color: #9ca3af;
-  font-size: 14px;
+  background: #facc15;
+  color: #000000;
+  font-size: 13px;
+  padding: 6px 24px;
   cursor: pointer;
-  padding: 0 4px;
-  line-height: 1;
+  margin-bottom: 10px;
 }
 
-.od-auth-close:focus,
-.od-auth-close:focus-visible {
+.training-session-pause-btn:focus,
+.training-session-pause-btn:focus-visible {
   outline: none;
   box-shadow: none;
 }
 
+.training-session-avatar {
+  width: 190px;
+  height: 190px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.training-session-avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.training-session-quote {
+  max-width: 420px;
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.training-session-reps {
+  font-size: 32px;
+  font-weight: 700;
+  margin-top: 10px;
+}
+
+.training-session-set-caption {
+  font-size: 11px;
+  color: #a1a1aa;
+}
+
+.training-session-set-number {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.training-session-actions {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 260px;
+}
+
+.training-btn {
+  border: none;
+  border-radius: 0;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 700;
+  text-transform: lowercase;
+  cursor: pointer;
+}
+
+.training-btn--green {
+  background: #16a34a;
+  color: #000000;
+}
+
+.training-btn--red {
+  background: #dc2626;
+  color: #000000;
+}
+
+  .ov-avatar-big {
+    width: 160px;
+    height: 160px;
+  }
+
+  .ov-options-row {
+    gap: 18px;
+  }
+
+  .ov-option-btn {
+    font-size: 16px;
+  }
+}
